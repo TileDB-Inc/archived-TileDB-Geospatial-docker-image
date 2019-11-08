@@ -1,0 +1,50 @@
+trigger:
+- master
+
+variables:
+  imageName: 'tiledb/tiledb-geospatial'
+
+jobs:
+- job: Default
+  displayName: 'Build and deploy to dockerhub'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  timeoutInMinutes: 240
+  steps:
+  - task: Docker@2
+    displayName: Build an image
+    inputs:
+      repository: $(imageName)
+      command: build
+      Dockerfile: docker/Dockerfile
+      tags: |
+        $(build.SourceBranchName)
+  - task: Docker@2
+    displayName: Build an image
+    inputs:
+      repository: $(imageName)
+      command: build
+      Dockerfile: docker/Dockerfile
+      tags: |
+        latest
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
+  - task: Docker@2
+    displayName: Push image
+    inputs:
+      containerRegistry: |
+        dockerHub
+      repository: $(imageName)
+      command: push
+      tags: |
+        $(build.SourceBranchName)
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'master'), startsWith(variables['Build.SourceBranch'], 'refs/tags')))
+  - task: Docker@2
+    displayName: Push image
+    inputs:
+      containerRegistry: |
+        dockerHub
+      repository: $(imageName)
+      command: push
+      tags: |
+        latest
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
