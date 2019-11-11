@@ -24,17 +24,20 @@ RUN apt-get update && apt-get install -y \
   libzstd-dev \
   git \
   wget \
-  python3-pip \
   && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get purge python3-pip python3-setuptools \
+  && mkdir build_deps && cd build_deps \
+  && wget https://bootstrap.pypa.io/get-pip.py \
+  && python3 get-pip.py
+
 # Install tiledb using 1.6.3 release
-RUN mkdir build_deps && cd build_deps \
+RUN cd /build_deps \
   && git clone https://github.com/TileDB-Inc/TileDB.git -b 1.6.3 && cd TileDB \
   && mkdir -p build && cd build \
   && cmake -DTILEDB_VERBOSE=ON -DTILEDB_S3=ON -DTILEDB_SERIALIZATION=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. \
   && make -j$(nproc) \
-  && make -C tiledb install \
-  && cd ../..
+  && make -C tiledb install
 
 # Install curl after building tiledb
 RUN apt-get update && apt-get install -y \
@@ -48,8 +51,7 @@ RUN cd /build_deps \
   && mkdir -p build && cd build \
   && cmake .. \
   && make -j$(nproc) \
-  && make install \
-  && cd ../..
+  && make install
 
 # Install libtiff
 RUN cd /build_deps \
@@ -58,8 +60,7 @@ RUN cd /build_deps \
   && cd tiff-4.1.0 \
   && ./configure \
   && make \
-  && make install \
-  && cd ..
+  && make install
 
 # Install Proj
 RUN cd /build_deps \
@@ -67,8 +68,7 @@ RUN cd /build_deps \
   && mkdir -p build && cd build \
   && cmake .. \
   && make -j$(nproc) \
-  && make install \
-  && cd ../..
+  && make install
 
 # Install libgeotiff
 RUN cd /build_deps \
@@ -78,8 +78,7 @@ RUN cd /build_deps \
   && mkdir -p build && cd build \
   && cmake .. \
   && make \
-  && make install \
-  && cd ../..
+  && make install
 
 # Install GDAL
 RUN cd /build_deps \
@@ -87,44 +86,39 @@ RUN cd /build_deps \
   && git checkout 1b3aa3aac9ea0901ecdcd15f605665c503967dad \
   && ./configure \
   && make -j$(nproc) \
-  && make install \
-  && cd ../..
+  && make install
 
 # Install Rasterio
-RUN pip3 install cython && pip3 install numpy
+RUN cd /build_deps && pip3 install cython && pip3 install numpy
 RUN cd /build_deps \
   && git clone https://github.com/mapbox/rasterio.git -b 1.1.0 && cd rasterio \
-  && python3 setup.py install \
-  && cd ..
+  && python3 setup.py install
 
 ## Install TileDB-Py
 RUN cd /build_deps \
   && git clone https://github.com/TileDB-Inc/TileDB-Py.git -b ihn/domain_indexing \
-  && cd TileDB-Py && python3 setup.py install \
-  && cd ..
+  && cd TileDB-Py && python3 setup.py install
 
 ## Install XArray
-RUN pip3 install xarray
+RUN cd /build_deps \
+  pip3 install xarray
 
 ## Install Dask
 RUN cd /build_deps \
   && git clone https://github.com/dask/dask.git && cd dask \
   && git checkout 807f3225cf840f28ce7cf89b88fea63d473889e7 \
-  && python3 setup.py install \
-  && cd ..
+  && python3 setup.py install
 
 # Install TileDB-SAR
 RUN cd /build_deps \
   && git clone https://github.com/TileDB-Inc/TileDB-SAR.git && cd TileDB-SAR \
   && git checkout 888059a15d87ae95fff6dc01c8bd4343ee4eaee1 \
-  && python3 setup.py install \
-  && cd ..
+  && python3 setup.py install
 
 # Install Fiona
 RUN cd /build_deps \
   && git clone https://github.com/Toblerity/Fiona.git && cd Fiona \
-  && python3 setup.py install \
-  && cd ..
+  && python3 setup.py install
 
 # Install Mapserver
 RUN cd /build_deps \
@@ -133,8 +127,7 @@ RUN cd /build_deps \
   && mkdir -p build && cd build \
   && cmake .. -DWITH_GIF=OFF -DWITH_HARFBUZZ=OFF -DWITH_PROTOBUFC=OFF -DWITH_FRIBIDI=OFF -DWITH_POSTGIS=OFF -DWITH_GEOS=OFF -DWITH_FCGI=OFF -DWITH_CAIRO=OFF \
   && make \
-  && make install \
-  && cd ../..
+  && make install
 
 # Install LasZIP
 RUN cd /build_deps \
@@ -144,8 +137,7 @@ RUN cd /build_deps \
   && mkdir -p build && cd build \
   && cmake .. \
   && make \
-  && make install \
-  && cd ../..
+  && make install
 
 # Install PDAL
 RUN cd /build_deps \
@@ -153,15 +145,14 @@ RUN cd /build_deps \
   && mkdir -p build && cd build \
   && cmake .. \
   && make \
-  && make install \
-  && cd ../..
+  && make install
 
 # Install PDAL Python
-RUN git clone https://github.com/PDAL/python pdalextension \
+RUN pip3 install packaging \
+  && git clone https://github.com/PDAL/python pdalextension \
   && cd pdalextension \
   && python3 setup.py build \
-  && python3 setup.py install \
-  && cd ..
+  && python3 setup.py install
 
 # Clean up
 RUN cd /tmp && rm -r /build_deps
