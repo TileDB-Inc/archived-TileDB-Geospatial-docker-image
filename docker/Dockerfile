@@ -84,37 +84,40 @@ RUN cd /build_deps \
   && make -j$(nproc) \
   && make install
 
-# Install Rasterio
-RUN cd /build_deps && pip3 install cython && pip3 install numpy
-RUN cd /build_deps \
-  && git clone https://github.com/mapbox/rasterio.git -b 1.1.0 && cd rasterio \
-  && python3 setup.py install
-
 ## Install TileDB-Py
 RUN cd /build_deps \
+  && pip3 install numpy \
   && git clone https://github.com/TileDB-Inc/TileDB-Py.git -b ihn/domain_indexing \
   && cd TileDB-Py && python3 setup.py install
 
 ## Install XArray
-RUN cd /build_deps \
-  pip3 install xarray
+RUN cd /build_deps && pip3 install xarray
 
 ## Install Dask
 RUN cd /build_deps \
+  && pip3 install toolz && pip3 install dask_image \
   && git clone https://github.com/dask/dask.git && cd dask \
   && git checkout 807f3225cf840f28ce7cf89b88fea63d473889e7 \
-  && python3 setup.py install
+  && python3 setup.py install \
+  && pip3 install dask distributed --upgrade \
+  && pip3 install dask-image
 
-# Install TileDB-SAR
+# Install Rasterio
+RUN cd /build_deps && pip3 install cython
 RUN cd /build_deps \
-  && git clone https://github.com/TileDB-Inc/TileDB-SAR.git && cd TileDB-SAR \
-  && git checkout 888059a15d87ae95fff6dc01c8bd4343ee4eaee1 \
+  && git clone https://github.com/mapbox/rasterio.git -b 1.1.0 && cd rasterio \
   && python3 setup.py install
 
 # Install Fiona
 RUN cd /build_deps \
   && git clone https://github.com/Toblerity/Fiona.git && cd Fiona \
   && python3 setup.py install
+
+# Install TileDB-SAR
+# RUN cd /build_deps \
+#   && git clone https://github.com/TileDB-Inc/TileDB-SAR.git && cd TileDB-SAR \
+#   && git checkout 888059a15d87ae95fff6dc01c8bd4343ee4eaee1 \
+#   && python3 setup.py install
 
 # Install Mapserver
 RUN cd /build_deps \
