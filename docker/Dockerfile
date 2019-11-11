@@ -157,11 +157,11 @@ RUN cd /build_deps \
   && cd ../..
 
 # Install PDAL Python
-# RUN git clone https://github.com/PDAL/python pdalextension \
-#   && cd pdalextension \
-#   && python3 setup.py build \
-#   && python3 setup.py install \
-#   && cd ..
+RUN git clone https://github.com/PDAL/python pdalextension \
+  && cd pdalextension \
+  && python3 setup.py build \
+  && python3 setup.py install \
+  && cd ..
 
-# # Clean up
-# RUN cd /tmp && rm -r /build_deps
+# Clean up
+RUN cd /tmp && rm -r /build_deps
