@@ -27,9 +27,9 @@ RUN apt-get update && apt-get install -y \
   wget \
   && rm -rf /var/lib/apt/lists/*
 
-# Install tiledb using 1.6.3 release
+# Install tiledb using 1.7.2 release
 RUN mkdir -p /build_deps && cd /build_deps \
-  && git clone https://github.com/TileDB-Inc/TileDB.git -b 1.6.3 && cd TileDB \
+  && git clone https://github.com/TileDB-Inc/TileDB.git -b 1.7.2 && cd TileDB \
   && mkdir -p build && cd build \
   && cmake -DTILEDB_VERBOSE=ON -DTILEDB_S3=ON -DTILEDB_SERIALIZATION=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. \
   && make -j$(nproc) \
@@ -79,7 +79,7 @@ RUN cd /build_deps \
 # Install GDAL
 RUN cd /build_deps \
   && git clone https://github.com/OSGeo/gdal.git && cd gdal/gdal \
-  && git checkout 1b3aa3aac9ea0901ecdcd15f605665c503967dad \
+  && git checkout c99a871a7bdedc751c503bb8cf508d9016510fe0 \
   && ./configure --with-crypto=no --with-curl=no \
   && make -j$(nproc) \
   && make install
@@ -87,7 +87,7 @@ RUN cd /build_deps \
 ## Install TileDB-Py
 RUN cd /build_deps \
   && pip3 install numpy \
-  && git clone https://github.com/TileDB-Inc/TileDB-Py.git -b ihn/domain_indexing \
+  && git clone https://github.com/TileDB-Inc/TileDB-Py.git -b 0.5.3 \
   && cd TileDB-Py && python3 setup.py install
 
 ## Install XArray
@@ -114,10 +114,10 @@ RUN cd /build_deps \
   && python3 setup.py install
 
 # Install TileDB-SAR
-# RUN cd /build_deps \
-#   && git clone https://github.com/TileDB-Inc/TileDB-SAR.git && cd TileDB-SAR \
-#   && git checkout 888059a15d87ae95fff6dc01c8bd4343ee4eaee1 \
-#   && python3 setup.py install
+RUN cd /build_deps \
+  && git clone https://github.com/TileDB-Inc/TileDB-SAR.git && cd TileDB-SAR \
+  && git checkout 888059a15d87ae95fff6dc01c8bd4343ee4eaee1 \
+  && python3 setup.py install
 
 # Install Mapserver
 RUN cd /build_deps \
