@@ -27,9 +27,9 @@ RUN apt-get update && apt-get install -y \
   wget \
   && rm -rf /var/lib/apt/lists/*
 
-# Install tiledb using 1.7.2 release
+# Install tiledb using 1.7.5 release
 RUN mkdir -p /build_deps && cd /build_deps \
-  && git clone https://github.com/TileDB-Inc/TileDB.git -b 1.7.2 && cd TileDB \
+  && git clone https://github.com/TileDB-Inc/TileDB.git -b 1.7.5 && cd TileDB \
   && mkdir -p build && cd build \
   && cmake -DTILEDB_VERBOSE=ON -DTILEDB_S3=ON -DTILEDB_SERIALIZATION=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. \
   && make -j$(nproc) \
@@ -79,7 +79,7 @@ RUN cd /build_deps \
 # Install GDAL
 RUN cd /build_deps \
   && git clone https://github.com/OSGeo/gdal.git && cd gdal/gdal \
-  && git checkout c99a871a7bdedc751c503bb8cf508d9016510fe0 \
+  && git checkout 8385b711eef5ed9d034f215e8fa3507c90cd3471 \
   && ./configure --with-crypto=no --with-curl=no \
   && make -j$(nproc) \
   && make install
@@ -87,7 +87,7 @@ RUN cd /build_deps \
 ## Install TileDB-Py
 RUN cd /build_deps \
   && pip3 install numpy \
-  && git clone https://github.com/TileDB-Inc/TileDB-Py.git -b 0.5.3 \
+  && git clone https://github.com/TileDB-Inc/TileDB-Py.git -b 0.5.6 \
   && cd TileDB-Py && python3 setup.py install
 
 ## Install XArray
@@ -105,7 +105,8 @@ RUN cd /build_deps \
 # Install Rasterio
 RUN cd /build_deps && pip3 install cython
 RUN cd /build_deps \
-  && git clone https://github.com/mapbox/rasterio.git -b 1.1.0 && cd rasterio \
+  && git clone https://github.com/mapbox/rasterio.git && cd rasterio \
+  && git checkout 74bd625dfd984ca090a1ee02f4fc1940b11d7ce8 \
   && python3 setup.py install
 
 # Install Fiona
@@ -115,9 +116,9 @@ RUN cd /build_deps \
 
 # Install TileDB-SAR
 RUN cd /build_deps \
-  && git clone https://github.com/TileDB-Inc/TileDB-SAR.git && cd TileDB-SAR \
-  && git checkout 888059a15d87ae95fff6dc01c8bd4343ee4eaee1 \
-  && python3 setup.py install
+   && git clone https://github.com/TileDB-Inc/TileDB-SAR.git && cd TileDB-SAR \
+   && git checkout 888059a15d87ae95fff6dc01c8bd4343ee4eaee1 \
+   && python3 setup.py install
 
 # Install Mapserver
 RUN cd /build_deps \
@@ -140,7 +141,8 @@ RUN cd /build_deps \
 
 # Install PDAL
 RUN cd /build_deps \
-  && git clone https://github.com/PDAL/PDAL.git -b 2.0.1 && cd PDAL \
+  && git clone https://github.com/PDAL/PDAL.git && cd PDAL \
+  && git checkout 5be7c48b3501a6092aef70fc35ee9d75f11a61f4 \
   && mkdir -p build && cd build \
   && cmake .. \
   && make \
