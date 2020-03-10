@@ -142,7 +142,7 @@ RUN cd /build_deps \
 # Install PDAL
 RUN cd /build_deps \
   && git clone https://github.com/PDAL/PDAL.git && cd PDAL \
-  && git checkout 5be7c48b3501a6092aef70fc35ee9d75f11a61f4 \
+  && git checkout 3c720fb853f29679239c23d9cf9b0e27e0be2ad3 \
   && mkdir -p build && cd build \
   && cmake .. -G "Unix Makefiles" .. -DBUILD_PLUGIN_TILEDB=ON -DWITH_LASZIP=ON \
   && make \
