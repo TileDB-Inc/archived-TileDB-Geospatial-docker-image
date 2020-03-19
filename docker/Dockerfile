@@ -22,6 +22,7 @@ RUN apt-get update && apt-get install -y \
   libpng-dev \
   libfreetype6-dev \  
   libzstd-dev \
+  libnetcdf-dev \
   python3-pip \
   git \
   wget \
@@ -80,7 +81,7 @@ RUN cd /build_deps \
 RUN cd /build_deps \
   && git clone https://github.com/OSGeo/gdal.git && cd gdal/gdal \
   && git checkout 8385b711eef5ed9d034f215e8fa3507c90cd3471 \
-  && ./configure --with-crypto=no --with-curl=no \
+  && ./configure --with-crypto=no --with-curl=no --with-netcdf=yes \
   && make -j$(nproc) \
   && make install
 
