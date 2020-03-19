@@ -22,14 +22,15 @@ RUN apt-get update && apt-get install -y \
   libpng-dev \
   libfreetype6-dev \  
   libzstd-dev \
+  libnetcdf-dev \
   python3-pip \
   git \
   wget \
   && rm -rf /var/lib/apt/lists/*
 
-# Install tiledb using 1.7.5 release
+# Install tiledb using 1.7.6 release
 RUN mkdir -p /build_deps && cd /build_deps \
-  && git clone https://github.com/TileDB-Inc/TileDB.git -b 1.7.5 && cd TileDB \
+  && git clone https://github.com/TileDB-Inc/TileDB.git -b 1.7.6 && cd TileDB \
   && mkdir -p build && cd build \
   && cmake -DTILEDB_VERBOSE=ON -DTILEDB_S3=ON -DTILEDB_SERIALIZATION=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. \
   && make -j$(nproc) \
@@ -80,7 +81,7 @@ RUN cd /build_deps \
 RUN cd /build_deps \
   && git clone https://github.com/OSGeo/gdal.git && cd gdal/gdal \
   && git checkout 8385b711eef5ed9d034f215e8fa3507c90cd3471 \
-  && ./configure --with-crypto=no --with-curl=no \
+  && ./configure --with-crypto=no --with-curl=no --with-netcdf=yes \
   && make -j$(nproc) \
   && make install
 
