@@ -28,9 +28,9 @@ RUN apt-get update && apt-get install -y \
   wget \
   && rm -rf /var/lib/apt/lists/*
 
-# Install tiledb using 1.7.6 release
+# Install tiledb using 2.0 release
 RUN mkdir -p /build_deps && cd /build_deps \
-  && git clone https://github.com/TileDB-Inc/TileDB.git -b 1.7.6 && cd TileDB \
+  && git clone https://github.com/TileDB-Inc/TileDB.git -b 2.0.0 && cd TileDB \
   && mkdir -p build && cd build \
   && cmake -DTILEDB_VERBOSE=ON -DTILEDB_S3=ON -DTILEDB_SERIALIZATION=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. \
   && make -j$(nproc) \
@@ -80,7 +80,7 @@ RUN cd /build_deps \
 # Install GDAL
 RUN cd /build_deps \
   && git clone https://github.com/OSGeo/gdal.git && cd gdal/gdal \
-  && git checkout 8385b711eef5ed9d034f215e8fa3507c90cd3471 \
+  && git checkout v3.1.0RC3 \
   && ./configure --with-crypto=no --with-curl=no --with-netcdf=yes \
   && make -j$(nproc) \
   && make install
@@ -88,7 +88,7 @@ RUN cd /build_deps \
 ## Install TileDB-Py
 RUN cd /build_deps \
   && pip3 install numpy \
-  && git clone https://github.com/TileDB-Inc/TileDB-Py.git -b 0.5.6 \
+  && git clone https://github.com/TileDB-Inc/TileDB-Py.git -b 0.6.0 \
   && cd TileDB-Py && python3 setup.py install
 
 ## Install XArray
@@ -143,7 +143,7 @@ RUN cd /build_deps \
 # Install PDAL
 RUN cd /build_deps \
   && git clone https://github.com/PDAL/PDAL.git && cd PDAL \
-  && git checkout 3c720fb853f29679239c23d9cf9b0e27e0be2ad3 \
+  && git checkout 2.1-maintenance \
   && mkdir -p build && cd build \
   && cmake .. -G "Unix Makefiles" .. -DBUILD_PLUGIN_TILEDB=ON -DWITH_LASZIP=ON \
   && make \
@@ -151,6 +151,8 @@ RUN cd /build_deps \
 
 # Install PDAL Python
 RUN pip3 install packaging \
+  && pip3 install cmake \
+  && pip3 install scikit-build \
   && git clone https://github.com/PDAL/python pdalextension \
   && cd pdalextension \
   && python3 setup.py build \
