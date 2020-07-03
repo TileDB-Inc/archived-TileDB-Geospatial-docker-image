@@ -80,7 +80,7 @@ RUN cd /build_deps \
 # Install GDAL
 RUN cd /build_deps \
   && git clone https://github.com/OSGeo/gdal.git && cd gdal/gdal \
-  && git checkout v3.1.0RC3 \
+  && git checkout v3.1.1 \
   && ./configure --with-crypto=no --with-curl=no --with-netcdf=yes \
   && make -j$(nproc) \
   && make install
