@@ -37,9 +37,9 @@ RUN mkdir /build_deps && cd /build_deps \
   && ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake \
   && cmake --version
 
-# Install tiledb using 2.6.3 release
+# Install tiledb using 2.6.4 release
 RUN cd /build_deps \
-  && git clone https://github.com/TileDB-Inc/TileDB.git -b 2.6.3 && cd TileDB \
+  && git clone https://github.com/TileDB-Inc/TileDB.git -b 2.6.4 && cd TileDB \
   && mkdir build && cd build \
   && ../bootstrap --prefix=/usr/local --enable-s3 --enable-serialization \
   && make && make -C tiledb install
