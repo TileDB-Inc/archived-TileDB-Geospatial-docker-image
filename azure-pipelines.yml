@@ -13,7 +13,7 @@ jobs:
 - job: Default
   displayName: 'Build and deploy to dockerhub'
   pool:
-    vmImage: 'Ubuntu-16.04'
+    vmImage: 'Ubuntu-20.04'
   timeoutInMinutes: 240
   steps:
   - task: Docker@2
